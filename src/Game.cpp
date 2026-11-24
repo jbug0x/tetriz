@@ -42,7 +42,7 @@ void Game::Update()
             currentPiece.MoveLeft();
     }
 
-    if (IsKeyPressed(KEY_DOWN))
+    if (IsKeyDown(KEY_DOWN))
     {
         currentPiece.MoveDown();
         if (!board.IsValid(currentPiece))
@@ -66,6 +66,11 @@ void Game::Update()
         {
             currentPiece.MoveUp();
             board.LockPiece(currentPiece);
+
+            int linesCleared = board.ClearFullRows(); 
+            score += linesCleared;
+
+            PieceType nextType = static_cast<PieceType>(GetRandomValue(0, 6));
             currentPiece = Piece{nextType};
         }
 

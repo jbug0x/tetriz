@@ -14,7 +14,13 @@ public:
     void LockPiece(const Piece &p);
     void Draw() const;
 
+    int ClearFullRows();
+
 private:
     int grid[ROWS][COLUMNS] = {};
+    bool IsRowFull(int row) const;
+    void ClearRow(int row);
+    void MoveRowDown(int row, int numRows);
+
     Piece currentPiece;
 };

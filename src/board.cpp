@@ -33,6 +33,53 @@ void Board::LockPiece(const Piece &p)
     }
 }
 
+bool Board::IsRowFull(int row) const
+{
+    for (int c = 0; c < COLUMNS; c++)
+    {
+        if (grid[row][c] == 0)
+            return false;
+    }
+    return true;
+}
+
+void Board::ClearRow(int row)
+{
+    for (int c = 0; c < COLUMNS; c++)
+    {
+        grid[row][c] = 0;
+    }
+}
+
+void Board::MoveRowDown(int row, int numRows)
+{
+    for (int c = 0; c < COLUMNS; c++)
+    {
+        grid[row + numRows][c] = grid[row][c];
+        grid[row][c] = 0;
+    }
+}
+
+int Board::ClearFullRows()
+{
+    int completed = 0;
+
+    for (int r = ROWS - 1; r >= 0; r--)
+    {
+        if (IsRowFull(r))
+        {
+            ClearRow(r);
+            completed++; 
+        }
+        else if (completed > 0)
+        {
+            MoveRowDown(r, completed);
+        }
+    }
+
+    return completed;
+}
+
 bool Board::IsValid(const Piece &p) const
 {
     for (int r = 0; r < 4; r++)
