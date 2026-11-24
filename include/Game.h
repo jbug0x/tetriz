@@ -1,6 +1,7 @@
 #pragma once
-#include "Board.h"
 #include "raylib.h"
+#include "Board.h"
+#include "Piece.h"
 
 class Game
 {
@@ -17,7 +18,11 @@ public:
 private:
     int screenWidth;
     int screenHeight;
-    int score;
+    int score = 0;
+
+    float fallTimer = 0.0f;
+    float fallDelay = 1.0f;
 
     Board board;
+    Piece currentPiece{PieceType::I};
 };

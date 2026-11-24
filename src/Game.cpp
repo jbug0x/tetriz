@@ -27,7 +27,30 @@ void Game::Init()
 
 void Game::Update()
 {
-    // Update game logic here
+    if (IsKeyPressed(KEY_Q))
+    {
+        currentPiece.Rotate();
+        if (!board.IsValid(currentPiece))
+        {
+            // currentPiece.UndoRotate(); // Desfaz se bater na borda ou em outra peça
+        }
+    }
+
+    fallTimer += GetFrameTime();
+
+    if (fallTimer >= fallDelay)
+    {
+        currentPiece.MoveDown();
+
+        if (!board.IsValid(currentPiece))
+        {
+            currentPiece.MoveUp();
+            board.LockPiece(currentPiece); 
+            currentPiece = Piece{T};
+        }
+
+        fallTimer = 0.0f;
+    }
 }
 
 void Game::DrawSidePanel()
@@ -46,6 +69,7 @@ void Game::Draw()
     ClearBackground(BLACK);
 
     board.Draw();
+    currentPiece.Draw();
     DrawSidePanel();
 
     EndDrawing();
