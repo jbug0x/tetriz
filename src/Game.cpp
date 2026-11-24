@@ -21,14 +21,15 @@ void Game::Init()
     InitWindow(screenWidth, screenHeight, "Tetriz");
     SetTargetFPS(60);
 
+    currentPiece = Piece{static_cast<PieceType>(GetRandomValue(0, 6))};
+    nextPiece = Piece{static_cast<PieceType>(GetRandomValue(0, 6))};
+
     if (!IsWindowReady())
         cout << "Failed to initialize window!" << endl;
 }
 
 void Game::Update()
 {
-    nextType = static_cast<PieceType>(GetRandomValue(0, 6));
-
     if (IsKeyPressed(KEY_LEFT))
     {
         currentPiece.MoveLeft();
@@ -67,18 +68,39 @@ void Game::Update()
             currentPiece.MoveUp();
             board.LockPiece(currentPiece);
 
-            int linesCleared = board.ClearFullRows(); 
+            int linesCleared = board.ClearFullRows();
             score += linesCleared;
 
-            PieceType nextType = static_cast<PieceType>(GetRandomValue(0, 6));
-            currentPiece = Piece{nextType};
+            currentPiece = nextPiece;
+            nextPiece = Piece{static_cast<PieceType>(GetRandomValue(0, 6))};
         }
 
         fallTimer = 0.0f;
     }
 }
 
-void Game::DrawSidePanel()
+void Game::DrawNextPiece(const Piece &piece) const
+{
+    int startX = BOARD_WIDTH + 50;
+    int startY = 230;
+
+    for (int r = 0; r < 4; r++)
+    {
+        for (int c = 0; c < 4; c++)
+        {
+            if (piece.getShape()[r][c] != 0)
+            {
+                int posX = startX + c * CELL_SIZE;
+                int posY = startY + r * CELL_SIZE;
+
+                DrawRectangle(posX, posY, CELL_SIZE, CELL_SIZE, SKYBLUE);
+                DrawRectangleLines(posX, posY, CELL_SIZE, CELL_SIZE, DARKGRAY);
+            }
+        }
+    }
+}
+
+void Game::DrawSidePanel() const
 {
     int x = BOARD_WIDTH;
 
@@ -86,6 +108,8 @@ void Game::DrawSidePanel()
     DrawText("TETRIZ", x + 20, 20, 40, WHITE);
     DrawText(TextFormat("Score: %d", score), x + 20, 100, 30, WHITE);
     DrawText("Next:", x + 20, 180, 30, WHITE);
+
+    DrawNextPiece(nextPiece); // <-- Passa nextPiece em vez de currentPiece
 }
 
 void Game::Draw()

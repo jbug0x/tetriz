@@ -13,7 +13,7 @@ public:
     void Update();
     void Draw();
     void Run();
-    void DrawSidePanel();
+    void DrawSidePanel() const;
 
 private:
     int screenWidth;
@@ -25,5 +25,7 @@ private:
 
     Board board;
     Piece currentPiece = static_cast<PieceType>(GetRandomValue(0, 6));
-    PieceType nextType;
+    Piece nextPiece;
+
+    void DrawNextPiece(const Piece &piece) const;
 };
