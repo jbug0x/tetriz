@@ -27,13 +27,24 @@ void Game::Init()
 
 void Game::Update()
 {
+    if (IsKeyPressed(KEY_LEFT))
+    {
+        currentPiece.MoveLeft();
+        if (!board.IsValid(currentPiece))
+            currentPiece.MoveRight();
+    }
+    if (IsKeyPressed(KEY_RIGHT))
+    {
+        currentPiece.MoveRight();
+        if (!board.IsValid(currentPiece))
+            currentPiece.MoveLeft();
+    }
+    
     if (IsKeyPressed(KEY_Q))
     {
         currentPiece.Rotate();
         if (!board.IsValid(currentPiece))
-        {
-            // currentPiece.UndoRotate(); // Desfaz se bater na borda ou em outra peça
-        }
+            currentPiece.UndoRotate();
     }
 
     fallTimer += GetFrameTime();
@@ -45,8 +56,9 @@ void Game::Update()
         if (!board.IsValid(currentPiece))
         {
             currentPiece.MoveUp();
-            board.LockPiece(currentPiece); 
-            currentPiece = Piece{T};
+            board.LockPiece(currentPiece);
+            PieceType nextType = static_cast<PieceType>(GetRandomValue(0, 6));
+            currentPiece = Piece{nextType};
         }
 
         fallTimer = 0.0f;

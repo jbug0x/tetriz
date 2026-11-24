@@ -1,6 +1,7 @@
 #pragma once
 #include "Constants.h"
 #include "Piece.h"
+#include "raylib.h"
 
 class Board
 {
@@ -15,4 +16,5 @@ public:
 
 private:
     int grid[ROWS][COLUMNS] = {};
+    Piece currentPiece;
 };

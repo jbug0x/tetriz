@@ -1,5 +1,6 @@
 #include "../include/Board.h"
-#include "raylib.h"
+
+static const Color PIECE_COLORS[] = {BLANK, SKYBLUE, YELLOW, PURPLE, ORANGE, BLUE, GREEN, RED};
 
 Board::Board()
 {
@@ -13,18 +14,19 @@ bool Board::IsCellFree(int row, int col) const
 
 void Board::LockPiece(const Piece &p)
 {
+    currentPiece = p;
     for (int r = 0; r < 4; r++)
     {
         for (int c = 0; c < 4; c++)
         {
-            if (p.getShape()[r, c] != 0)
+            if (p.getShape()[r][c] != 0)
             {
                 int boardRow = p.getRow() + r;
                 int boardCol = p.getCol() + c;
 
                 if (boardRow >= 0 && boardRow < ROWS && boardCol >= 0 && boardCol < COLUMNS)
                 {
-                    grid[boardRow][boardCol] = 1;
+                    grid[boardRow][boardCol] = static_cast<int>(p.getType()) + 1;
                 }
             }
         }
@@ -37,7 +39,7 @@ bool Board::IsValid(const Piece &p) const
     {
         for (int c = 0; c < 4; c++)
         {
-            if (p.getShape()[r, c] == 0)
+            if (p.getShape()[r][c] == 0)
                 continue;
 
             int boardRow = p.getRow() + r;
@@ -50,7 +52,6 @@ bool Board::IsValid(const Piece &p) const
                 return false;
         }
     }
-
     return true;
 }
 
@@ -60,10 +61,14 @@ void Board::Draw() const
     {
         for (int c = 0; c < COLUMNS; c++)
         {
-            DrawRectangleLines(c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE, DARKGRAY);
+            int cell = grid[r][c];
 
-            if (grid[r][c] != 0)
-                DrawRectangle(c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE, WHITE);
+            if (cell != 0)
+            {
+                DrawRectangle(c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE, PIECE_COLORS[cell]);
+            }
+
+            DrawRectangleLines(c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE, DARKGRAY);
         }
     }
 }

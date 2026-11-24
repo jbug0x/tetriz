@@ -1,5 +1,7 @@
 #pragma once
 #include "Constants.h"
+#include "raylib.h"
+
 enum PieceType
 {
     I,
@@ -23,12 +25,15 @@ public:
     void MoveRight();
     void MoveDown();
     void Rotate();
+    void UndoRotate();
 
     const int (&getShape() const)[4][4] { return shape; }
     const int(&getRow() const) { return row; }
     const int(&getCol() const) { return col; }
 
     bool IsFilled(int r, int c) const;
+
+    PieceType getType() const { return type; }
 
 private:
     PieceType type;
