@@ -27,6 +27,8 @@ void Game::Init()
 
 void Game::Update()
 {
+    nextType = static_cast<PieceType>(GetRandomValue(0, 6));
+
     if (IsKeyPressed(KEY_LEFT))
     {
         currentPiece.MoveLeft();
@@ -39,7 +41,14 @@ void Game::Update()
         if (!board.IsValid(currentPiece))
             currentPiece.MoveLeft();
     }
-    
+
+    if (IsKeyPressed(KEY_DOWN))
+    {
+        currentPiece.MoveDown();
+        if (!board.IsValid(currentPiece))
+            currentPiece.MoveUp();
+    }
+
     if (IsKeyPressed(KEY_Q))
     {
         currentPiece.Rotate();
@@ -57,7 +66,6 @@ void Game::Update()
         {
             currentPiece.MoveUp();
             board.LockPiece(currentPiece);
-            PieceType nextType = static_cast<PieceType>(GetRandomValue(0, 6));
             currentPiece = Piece{nextType};
         }
 

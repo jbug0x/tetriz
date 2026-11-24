@@ -24,5 +24,6 @@ private:
     float fallDelay = 1.0f;
 
     Board board;
-    Piece currentPiece{PieceType::I};
+    Piece currentPiece = static_cast<PieceType>(GetRandomValue(0, 6));
+    PieceType nextType;
 };
