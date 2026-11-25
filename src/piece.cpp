@@ -47,10 +47,11 @@ Piece::Piece(PieceType type) : type(type)
             shape[r][c] = SHAPES[index][r][c];
 }
 
-void Piece::MoveLeft() { col--; }
-void Piece::MoveRight() { col++; }
-void Piece::MoveDown() { row++; }
-void Piece::MoveUp() { row--; }
+void Piece::Move(int dRow, int dCol)
+{
+    row += dRow;
+    col += dCol;
+}
 
 void Piece::Rotate()
 {
@@ -101,11 +102,6 @@ void Piece::UndoRotate()
             shape[r][c] = tmp[r][c];
         }
     }
-}
-
-bool Piece::IsFilled(int r, int c) const
-{
-    return shape[r][c] != 0;
 }
 
 void Piece::Draw() const

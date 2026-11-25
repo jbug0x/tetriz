@@ -22,11 +22,19 @@ private:
     int score = 0;
 
     float fallTimer = 0.0f;
-    float fallDelay = 1.0f;
+    float fallDelay = 0.5f;
+    float softDropDelay = 0.05f;
 
     Board board;
     Piece currentPiece = static_cast<PieceType>(GetRandomValue(0, 6));
     Piece nextPiece;
 
     void DrawNextPiece(const Piece &piece) const;
+
+    void HandleInput();
+    void ApplyGravity();
+    void LockAndSpawn();
+
+    bool TryMove(int dRow, int dCol);
+    bool TryRotate();
 };

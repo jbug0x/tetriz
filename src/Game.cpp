@@ -28,61 +28,73 @@ void Game::Init()
         cout << "Failed to initialize window!" << endl;
 }
 
+bool Game::TryMove(int dRow, int dCol)
+{
+    Piece test = currentPiece;
+    test.Move(dRow, dCol);
+    if (!board.IsValid(test))
+        return false;
+
+    currentPiece = test;
+    return true;
+}
+
+bool Game::TryRotate()
+{
+    Piece test = currentPiece;
+    test.Rotate();
+    if (!board.IsValid(test))
+        return false;
+
+    currentPiece = test;
+    return true;
+}
+
+void Game::HandleInput()
+{
+    if (IsKeyPressed(KEY_LEFT))
+        TryMove(0, -1);
+    if (IsKeyPressed(KEY_RIGHT))
+        TryMove(0, 1);
+    if (IsKeyPressed(KEY_DOWN))
+        TryMove(1, 0);
+    if (IsKeyPressed(KEY_Q))
+        TryRotate();
+}
+
+void Game::ApplyGravity()
+{
+    float delay = IsKeyDown(KEY_DOWN) ? softDropDelay : fallDelay;
+
+    fallTimer += GetFrameTime();
+    if (fallTimer >= delay)
+    {
+        fallTimer = 0.0f;
+
+        if (!TryMove(1, 0))
+            LockAndSpawn();
+    }
+}
+
+void Game::LockAndSpawn()
+{
+    board.LockPiece(currentPiece);
+    score += board.ClearFullRows();
+
+    currentPiece = nextPiece;
+    nextPiece = Piece{static_cast<PieceType>(GetRandomValue(0, 6))};
+
+    if (!board.IsValid(currentPiece))
+        gameOver = true;
+}
+
 void Game::Update()
 {
     if (gameOver)
         return;
 
-    if (IsKeyPressed(KEY_LEFT))
-    {
-        currentPiece.MoveLeft();
-        if (!board.IsValid(currentPiece))
-            currentPiece.MoveRight();
-    }
-    if (IsKeyPressed(KEY_RIGHT))
-    {
-        currentPiece.MoveRight();
-        if (!board.IsValid(currentPiece))
-            currentPiece.MoveLeft();
-    }
-
-    if (IsKeyDown(KEY_DOWN))
-    {
-        currentPiece.MoveDown();
-        if (!board.IsValid(currentPiece))
-            currentPiece.MoveUp();
-    }
-
-    if (IsKeyPressed(KEY_Q))
-    {
-        currentPiece.Rotate();
-        if (!board.IsValid(currentPiece))
-            currentPiece.UndoRotate();
-    }
-
-    fallTimer += GetFrameTime();
-
-    if (fallTimer >= fallDelay)
-    {
-        currentPiece.MoveDown();
-
-        if (!board.IsValid(currentPiece))
-        {
-            currentPiece.MoveUp();
-            board.LockPiece(currentPiece);
-
-            int linesCleared = board.ClearFullRows();
-            score += linesCleared;
-
-            currentPiece = nextPiece;
-            nextPiece = Piece{static_cast<PieceType>(GetRandomValue(0, 6))};
-        }
-
-        fallTimer = 0.0f;
-    }
-
-    if (board.IsFull())
-        gameOver = true;
+    HandleInput();
+    ApplyGravity();
 }
 
 void Game::DrawNextPiece(const Piece &piece) const
