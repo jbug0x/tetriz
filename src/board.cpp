@@ -14,23 +14,30 @@ bool Board::IsCellFree(int row, int col) const
 
 void Board::LockPiece(const Piece &p)
 {
-    currentPiece = p;
     for (int r = 0; r < 4; r++)
     {
         for (int c = 0; c < 4; c++)
         {
-            if (p.getShape()[r][c] != 0)
-            {
-                int boardRow = p.getRow() + r;
-                int boardCol = p.getCol() + c;
+            if (!p.IsFilled(r, c))
+                continue;
 
-                if (boardRow >= 0 && boardRow < ROWS && boardCol >= 0 && boardCol < COLUMNS)
-                {
-                    grid[boardRow][boardCol] = static_cast<int>(p.getType()) + 1;
-                }
-            }
+            int boardRow = p.getRow() + r;
+            int boardCol = p.getCol() + c;
+
+            if (boardRow >= 0 && boardRow < ROWS && boardCol >= 0 && boardCol < COLUMNS)
+                grid[boardRow][boardCol] = static_cast<int>(p.getType()) + 1;
         }
     }
+}
+
+bool Board::IsFull() const
+{
+    for (int c = 0; c < COLUMNS; c++)
+    {
+        if (grid[0][c] != 0)
+            return true;
+    }
+    return false;
 }
 
 bool Board::IsRowFull(int row) const
@@ -69,7 +76,7 @@ int Board::ClearFullRows()
         if (IsRowFull(r))
         {
             ClearRow(r);
-            completed++; 
+            completed++;
         }
         else if (completed > 0)
         {

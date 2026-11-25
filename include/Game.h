@@ -16,6 +16,7 @@ public:
     void DrawSidePanel() const;
 
 private:
+    bool gameOver = false;
     int screenWidth;
     int screenHeight;
     int score = 0;

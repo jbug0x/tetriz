@@ -30,6 +30,9 @@ void Game::Init()
 
 void Game::Update()
 {
+    if (gameOver)
+        return;
+
     if (IsKeyPressed(KEY_LEFT))
     {
         currentPiece.MoveLeft();
@@ -77,6 +80,9 @@ void Game::Update()
 
         fallTimer = 0.0f;
     }
+
+    if (board.IsFull())
+        gameOver = true;
 }
 
 void Game::DrawNextPiece(const Piece &piece) const
@@ -109,7 +115,7 @@ void Game::DrawSidePanel() const
     DrawText(TextFormat("Score: %d", score), x + 20, 100, 30, WHITE);
     DrawText("Next:", x + 20, 180, 30, WHITE);
 
-    DrawNextPiece(nextPiece); // <-- Passa nextPiece em vez de currentPiece
+    DrawNextPiece(nextPiece);
 }
 
 void Game::Draw()
@@ -118,7 +124,12 @@ void Game::Draw()
     ClearBackground(BLACK);
 
     board.Draw();
-    currentPiece.Draw();
+
+    if (!gameOver)
+        currentPiece.Draw();
+    else
+        DrawText("GAME OVER", 80, 450, 60, RED);
+
     DrawSidePanel();
 
     EndDrawing();

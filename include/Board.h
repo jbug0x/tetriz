@@ -13,6 +13,8 @@ public:
 
     void LockPiece(const Piece &p);
     void Draw() const;
+    bool IsFull() const;
+
 
     int ClearFullRows();
 
