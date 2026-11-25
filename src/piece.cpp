@@ -104,6 +104,11 @@ void Piece::UndoRotate()
     }
 }
 
+bool Piece::IsFilled(int r, int c) const
+{
+    return shape[r][c] != 0;
+}
+
 void Piece::Draw() const
 {
     for (int r = 0; r < 4; r++)

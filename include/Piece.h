@@ -28,6 +28,8 @@ public:
     const int(&getRow() const) { return row; }
     const int(&getCol() const) { return col; }
 
+    bool IsFilled(int r, int c) const;
+
     PieceType getType() const { return type; }
 
 private:
